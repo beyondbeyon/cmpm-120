@@ -12,14 +12,15 @@ let gameOptions = {
     playerGravity: 900,
     jumpForce: 400,
     playerStartPosition: 200,
-    jumps: 2
+    jumps: 2,
+    gameTimer: 1000
 }
     // object containing configuration options
     let config = {
         type: Phaser.CANVAS,
         width: 1334,
         height: 750,
-        scene:[ Menu, Play],
+        scene:[ Menu, Play, Credits],
         backgroundColor: 0x444444,
  
         // physics settings

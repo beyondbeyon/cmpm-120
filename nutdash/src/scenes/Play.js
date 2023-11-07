@@ -68,6 +68,28 @@ class Play extends Phaser.Scene{
         this.input.on("pointerdown", this.jump, this);
 
         this.gameOver = false;
+
+        this.p1Score = 0
+
+        // display score
+        let scoreConfig = {
+            fontFamily: 'Courier',
+            fontSize: '28px',
+            backgroundColor: '#F3B141',
+            color: '#843605',
+            align: 'right',
+            padding: {
+                top: 5,
+                bottom: 5,
+            },
+            fixedWidth: 100
+        }
+        this.scoreLeft = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding*2, this.p1Score, scoreConfig);
+
+        this.clock = this.time.delayedCall(gameOptions.gameTimer, () => {
+            this.p1Score += 10
+        },);
+
     }
  
     // the core of the script: platform are added from the pool or created on the fly
@@ -85,6 +107,7 @@ class Play extends Phaser.Scene{
             platform.setImmovable(true);
             platform.setVelocityX(gameOptions.platformStartSpeed * -1);
             this.platformGroup.add(platform);
+            this.p1Score = this.p1Score + 100;
         }
         platform.displayWidth = platformWidth;
         this.nextPlatformDistance = Phaser.Math.Between(gameOptions.spawnRange[0], gameOptions.spawnRange[1]);
@@ -98,27 +121,19 @@ class Play extends Phaser.Scene{
             }
             this.player.setVelocityY(gameOptions.jumpForce * -1);
             this.playerJumps ++;
+
         }
     }
     update(){
  
         // game over
         if(this.player.y > game.config.height){
-            this.add.text(game.config.width/2, game.config.height/2, 'GAME OVER').setOrigin(0.5);
-            this.add.text(game.config.width/2, game.config.height/2 + 64, 'Press (R) to Restart or ← to Menu').setOrigin(0.5);
             this.gameOver = true;
-            
+            this.scene.start("creditsScene");
         };
 
         this.player.x = gameOptions.playerStartPosition;
 
-        if(this.gameOver && Phaser.Input.Keyboard.JustDown(keyR)) {
-            this.scene.restart();
-        }
-
-        if(this.gameOver && Phaser.Input.Keyboard.JustDown(keyLEFT)) {
-            this.scene.start("menuScene");
-        }
  
         // recycling platforms
         let minDistance = game.config.width;
